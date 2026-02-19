@@ -6,10 +6,10 @@ Manages a Dockhand Git repository integration via `/api/git/repositories`.
 
 ```terraform
 resource "dockhand_git_repository" "stacks" {
-  name = "stacks"
-  url  = "https://github.com/example/your-repo.git"
-
+  name         = "stacks"
+  url          = "https://github.com/example/your-repo.git"
   branch       = "main"
+  compose_path = "myapp_stack/docker-compose.yaml"
 
   credential_id = dockhand_git_credential.github.id
 
@@ -25,7 +25,6 @@ resource "dockhand_git_repository" "stacks" {
 ### Read-only
 
 - `id` (String) Repository ID.
-- `compose_path` (String)
 - `webhook_secret` (String, Sensitive)
 - `last_sync` (String)
 - `last_commit` (String)
@@ -42,6 +41,7 @@ resource "dockhand_git_repository" "stacks" {
 ### Optional/Computed
 
 - `branch` (String)
+- `compose_path` (String) Path to the Docker Compose file within the repository (e.g. `myapp_stack/docker-compose.yaml`). Computed by Dockhand if not set.
 - `credential_id` (String)
 - `environment_id` (String)
 - `auto_update` (Boolean)
