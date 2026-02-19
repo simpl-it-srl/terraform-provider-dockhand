@@ -809,6 +809,67 @@ func (c *Client) DeleteGitRepository(ctx context.Context, id string) (int, error
 	return c.doJSONWithStatus(ctx, http.MethodDelete, "/api/git/repositories/"+url.PathEscape(id), nil, nil, nil)
 }
 
+// ── Git Stack CRUD ────────────────────────────────────────────────────────────
+
+type gitStackPayload struct {
+	StackName      string   `json:"stackName"`
+	ComposePath    string   `json:"composePath"`
+	EnvFilePath    *string  `json:"envFilePath,omitempty"`
+	EnvironmentID  *int64   `json:"environmentId,omitempty"`
+	AutoUpdate     bool     `json:"autoUpdate"`
+	AutoUpdateCron *string  `json:"autoUpdateCron,omitempty"`
+	WebhookEnabled bool     `json:"webhookEnabled"`
+	DeployNow      bool     `json:"deployNow"`
+	EnvVars        []any    `json:"envVars"`
+	RepositoryID   int64    `json:"repositoryId"`
+}
+
+type gitStackResponse struct {
+	ID             int64   `json:"id"`
+	StackName      string  `json:"stackName"`
+	ComposePath    string  `json:"composePath"`
+	EnvFilePath    *string `json:"envFilePath"`
+	EnvironmentID  *int64  `json:"environmentId"`
+	AutoUpdate     bool    `json:"autoUpdate"`
+	AutoUpdateCron *string `json:"autoUpdateCron"`
+	WebhookEnabled bool    `json:"webhookEnabled"`
+	WebhookSecret  *string `json:"webhookSecret"`
+	RepositoryID   int64   `json:"repositoryId"`
+}
+
+func (c *Client) GetGitStack(ctx context.Context, id string) (*gitStackResponse, int, error) {
+	var out gitStackResponse
+	status, err := c.doJSONWithStatus(ctx, http.MethodGet, "/api/git/stacks/"+url.PathEscape(id), nil, nil, &out)
+	if err != nil {
+		return nil, status, err
+	}
+	return &out, status, nil
+}
+
+func (c *Client) CreateGitStack(ctx context.Context, payload gitStackPayload) (*gitStackResponse, int, error) {
+	var out gitStackResponse
+	status, err := c.doJSONWithStatus(ctx, http.MethodPost, "/api/git/stacks", nil, payload, &out)
+	if err != nil {
+		return nil, status, err
+	}
+	return &out, status, nil
+}
+
+func (c *Client) UpdateGitStack(ctx context.Context, id string, payload gitStackPayload) (*gitStackResponse, int, error) {
+	var out gitStackResponse
+	status, err := c.doJSONWithStatus(ctx, http.MethodPut, "/api/git/stacks/"+url.PathEscape(id), nil, payload, &out)
+	if err != nil {
+		return nil, status, err
+	}
+	return &out, status, nil
+}
+
+func (c *Client) DeleteGitStack(ctx context.Context, id string) (int, error) {
+	return c.doJSONWithStatus(ctx, http.MethodDelete, "/api/git/stacks/"+url.PathEscape(id), nil, nil, nil)
+}
+
+// ── Git Stack Actions ─────────────────────────────────────────────────────────
+
 func (c *Client) TriggerGitStackWebhook(ctx context.Context, id string) (int, error) {
 	return c.doJSONWithStatus(ctx, http.MethodPost, "/api/git/stacks/"+url.PathEscape(id)+"/webhook", nil, map[string]any{}, nil)
 }

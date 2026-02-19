@@ -79,11 +79,7 @@ func (r *gitRepositoryResource) Schema(_ context.Context, _ resource.SchemaReque
 				},
 			},
 			"compose_path": schema.StringAttribute{
-				Optional: true,
 				Computed: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"credential_id": schema.StringAttribute{
 				MarkdownDescription: "Optional Git credential ID to use for this repo.",
@@ -187,13 +183,6 @@ func (r *gitRepositoryResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	state := modelFromGitRepositoryResponse(created)
-	// Dockhand may return a temporary compose_path (e.g. "compose.yaml") in the
-	// create response before it processes the repo. Preserve the planned value so
-	// Terraform does not raise an inconsistency error; the real value will be
-	// reconciled on the next Read.
-	if !plan.ComposePath.IsNull() && !plan.ComposePath.IsUnknown() {
-		state.ComposePath = plan.ComposePath
-	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -300,10 +289,6 @@ func buildGitRepositoryPayload(plan gitRepositoryModel) (gitRepositoryPayload, e
 	if !plan.Branch.IsNull() && !plan.Branch.IsUnknown() {
 		v := plan.Branch.ValueString()
 		payload.Branch = &v
-	}
-	if !plan.ComposePath.IsNull() && !plan.ComposePath.IsUnknown() {
-		v := plan.ComposePath.ValueString()
-		payload.ComposePath = &v
 	}
 	if !plan.CredentialID.IsNull() && !plan.CredentialID.IsUnknown() {
 		raw := plan.CredentialID.ValueString()
