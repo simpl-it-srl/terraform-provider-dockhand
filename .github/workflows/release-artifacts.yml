@@ -92,5 +92,6 @@ jobs:
           generate_release_notes: true
           files: |
             dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_*.zip
+            dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_manifest.json
             dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_SHA256SUMS
             dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_SHA256SUMS.sig

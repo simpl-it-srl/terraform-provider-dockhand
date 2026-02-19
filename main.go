@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/kalebharrison/terraform-provider-dockhand/internal/provider"
+	"github.com/simpl-it-srl/terraform-provider-dockhand/internal/provider"
 )
 
 var (
@@ -20,7 +20,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/kalebharrison/dockhand",
+		Address: "registry.terraform.io/simpl-it-srl/dockhand",
 		Debug:   debug,
 	}
 

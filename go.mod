@@ -1,4 +1,4 @@
-module github.com/kalebharrison/terraform-provider-dockhand
+module github.com/simpl-it-srl/terraform-provider-dockhand
 
 go 1.24.0
 
