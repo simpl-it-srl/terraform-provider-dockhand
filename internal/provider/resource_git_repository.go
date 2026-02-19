@@ -187,6 +187,13 @@ func (r *gitRepositoryResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	state := modelFromGitRepositoryResponse(created)
+	// Dockhand may return a temporary compose_path (e.g. "compose.yaml") in the
+	// create response before it processes the repo. Preserve the planned value so
+	// Terraform does not raise an inconsistency error; the real value will be
+	// reconciled on the next Read.
+	if !plan.ComposePath.IsNull() && !plan.ComposePath.IsUnknown() {
+		state.ComposePath = plan.ComposePath
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
