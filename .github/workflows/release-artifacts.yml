@@ -62,16 +62,11 @@ jobs:
             echo "Missing secret: GPG_PRIVATE_KEY" >&2
             exit 2
           fi
-          if [[ -z "${{ secrets.GPG_PASSPHRASE }}" ]]; then
-            echo "Missing secret: GPG_PASSPHRASE" >&2
-            exit 2
-          fi
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Sign checksums
         shell: bash
@@ -80,8 +75,7 @@ jobs:
           sums="dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_SHA256SUMS"
           sig="${sums}.sig"
           # Terraform Registry expects a binary detached signature (not ASCII-armored).
-          gpg --batch --yes --detach-sign --pinentry-mode loopback \
-            --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
+          gpg --batch --yes --detach-sign \
             --output "${sig}" "${sums}"
 
       - name: Publish GitHub Release
