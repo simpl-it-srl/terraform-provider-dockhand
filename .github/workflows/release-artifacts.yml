@@ -122,6 +122,8 @@ jobs:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: ${{ steps.ver.outputs.tag }}
           generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
           files: |
             dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_*.zip
             dist-local/terraform-provider-dockhand_${{ steps.ver.outputs.version }}_manifest.json
